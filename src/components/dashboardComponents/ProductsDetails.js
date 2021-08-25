@@ -3,6 +3,8 @@ import "../../style/ProductsDetails.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import { getProducts } from "../../redux/productSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { Table, Row, Typography, Button, Skeleton } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 const { Text } = Typography;
@@ -16,7 +18,9 @@ function ProductsDetails() {
   const { isLoading, products } = useSelector((state) => state.product);
 
   // INITIAL API CALL FOR GER PRODUCTS
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(getProducts());
+  }, []);
 
   // COLUMNS FOR TABLE
   const columns = [
@@ -111,6 +115,21 @@ function ProductsDetails() {
     },
   ];
 
+  // SET UP THE DATA FOR TABLE
+  const productList = [];
+  products.map((product) => {
+    productList.push({
+      id: product._id,
+      productName: product.name,
+      type: product.category,
+      quantity: product.qty,
+      price: product.prices.price,
+      discount: product.prices.discount,
+      img: product.imgUrl,
+    });
+    return productList;
+  });
+
   return (
     <div className="products-details-container">
       <Row className="products-details-container-header">
@@ -125,7 +144,12 @@ function ProductsDetails() {
           </Button>
         </Skeleton>
       </Row>
-      <Table className="products-details-table" />
+      <Table
+        className="products-details-table"
+        loading={isLoading}
+        columns={columns}
+        dataSource={productList}
+      />
     </div>
   );
 }

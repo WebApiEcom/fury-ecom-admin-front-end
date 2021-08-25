@@ -11,6 +11,24 @@ import UpdateProduct from "../pages/UpdateProduct";
 function AuthRoutes() {
   return (
     <Switch>
+      {/* <Route path="/dashboard/product/:productId">
+        <UpdateProduct />
+      </Route>
+      <Route path="/dashboard/edit/new">
+        <NewItem />
+      </Route>
+      <Route path="/dashboard/insert">
+        <Insert />
+      </Route>
+      <Route path="/dashboard/edit">
+        <Edit />
+      </Route>
+      <Route exact path="/dashboard">
+        <Dashboard />
+      </Route>
+      <Route path="*">
+        <NotFound /> */}
+
       <Route path="/add-product">
         <AddProduct />
       </Route>
