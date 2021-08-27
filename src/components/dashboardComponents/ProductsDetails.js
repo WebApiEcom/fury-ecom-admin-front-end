@@ -1,25 +1,70 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../style/ProductsDetails.css";
+import axios from "axios";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import { getProducts } from "../../redux/productSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Typography, Button, Skeleton } from "antd";
+import { Table, Row, Typography, Button, Skeleton, Modal, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 function ProductsDetails() {
   // VARIABLES
-  const dispatch = useDispatch();
   const history = useHistory();
 
   // LOCAL STATES
-  const { isLoading, products } = useSelector((state) => state.product);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // STATES FOR DELETE MODEL
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [deleteItem, setDeleteItem] = useState();
+
+  // MODEL SHOW OR NOT AND SET DELETE ITEM TO STATE
+  const showModal = (id) => {
+    setIsModalVisible(true);
+    setDeleteItem(id);
+  };
+
+  // DELETE SPECIFIC PRODUCT
+  const handleOk = async () => {
+    await axios
+      .request({
+        method: "delete",
+        url: `http://localhost:4000/fury/admin/products/${deleteItem}`,
+      })
+      .then(() => {
+        let updatedProducts = products.filter(
+          (product) => product._id !== deleteItem
+        );
+        setProducts(updatedProducts);
+        setIsModalVisible(false);
+        message.success(`Successfully removed  from your stock !`);
+      });
+  };
+
+  // CANCEL DELETE MODEL
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  // FUNCTION FOR GET ALL PRODUCTS
+  const getProducts = async () => {
+    await axios
+      .request({
+        method: "get",
+        url: "http://localhost:4000/fury/admin/products",
+      })
+      .then((response) => {
+        setProducts(response.data);
+        setIsLoading(false);
+        console.log(response.data);
+      });
+  };
 
   // INITIAL API CALL FOR GER PRODUCTS
   useEffect(() => {
-    dispatch(getProducts());
+    getProducts();
   }, []);
 
   // COLUMNS FOR TABLE
@@ -109,7 +154,12 @@ function ProductsDetails() {
       rowKey: "dview",
       render: (text, path) => (
         <div>
-          <DeleteOutlined className="product-details-table-delete" />
+          <DeleteOutlined
+            className="product-details-table-delete"
+            onClick={() => {
+              showModal(path.id);
+            }}
+          />
         </div>
       ),
     },
@@ -150,6 +200,16 @@ function ProductsDetails() {
         columns={columns}
         dataSource={productList}
       />
+
+      <Modal
+        title="Remove"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        centered="true"
+      >
+        <p>Do you really want to remove this product ?</p>
+      </Modal>
     </div>
   );
 }
