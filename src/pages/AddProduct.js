@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import "../style/AddProduct.css";
+import axios from "axios";
 import firebase from "../firebase/firebase";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  createProduct,
-  clearProductStatesAndCreate,
-} from "../redux/productSlice";
 import { useHistory } from "react-router";
 import {
   Row,
@@ -27,7 +23,6 @@ const { TextArea } = Input;
 
 function AddProduct() {
   // VARIABLES
-  const dispatch = useDispatch();
   const history = useHistory();
 
   //  LOCAL STATES
@@ -35,26 +30,21 @@ function AddProduct() {
   const [progress, setProgress] = useState(0);
   const [downloadURL, setDownloadURL] = useState(null);
   const [dumy, setDumy] = useState("https://i.stack.imgur.com/y9DpT.jpg");
-  const [showAlert, setShowAlert] = useState(false);
   const [productName, setProductName] = useState();
   const [productType, setProductType] = useState();
   const [productPrice, setProductPrice] = useState();
   const [productDiscount, setProductDiscount] = useState();
   const [productQty, setProductQty] = useState();
   const [productIsActive, setProductIsActive] = useState(false);
-  const [alertMessage, setAlertMessage] = useState();
-  const [alertMessageStatus, setAlertMessageStatus] = useState();
+
   const [submitdisable, setSubmitdisable] = useState(true);
   const [productWeight, setProductWeight] = useState();
   const [productDescription, setProductDescription] = useState();
 
-  // REDUX STATES
-  const {
-    createProductMessage,
-    createProductAlertType,
-    createProductAlertStatus,
-    createProductResult,
-  } = useSelector((state) => state.product);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState();
+  const [alertSuccessResult, setAlertSuccessResult] = useState(false);
+  const [alertSuccessResultMessage, setAlertSuccessResultMessage] = useState();
 
   // NAME
   const onName = (e) => {
@@ -109,7 +99,6 @@ function AddProduct() {
       if (image == null) {
         setShowAlert(true);
         setAlertMessage("Please select a Image");
-        setAlertMessageStatus("error");
       } else {
         let file = image;
         var storage = firebase.storage();
@@ -142,24 +131,32 @@ function AddProduct() {
 
   // CREATE PRODUCT
   const onSubmit = async () => {
-    const product = {
-      productName: productName,
-      productQty: productQty,
-      downloadURL: downloadURL,
-      productType: productType,
-      productIsActive: productIsActive,
-      productPrice: productPrice,
-      productDiscount: productDiscount,
-      productWeight: productWeight,
-      productDescription: productDescription,
-    };
-
-    dispatch(createProduct(product));
+    await axios
+      .post("http://localhost:4000/fury/admin/products", {
+        name: productName,
+        qty: productQty,
+        imgUrl: downloadURL,
+        category: productType,
+        isActive: productIsActive,
+        prices: {
+          price: productPrice,
+          discount: productDiscount,
+        },
+        description: productDescription,
+        weight: productWeight,
+      })
+      .then((response) => {
+        setAlertSuccessResult(true);
+        setAlertSuccessResultMessage(response.data.message);
+      })
+      .catch((error) => {
+        setShowAlert(true);
+        setAlertMessage(error.response.data);
+      });
   };
 
   // CLEAR REDUX STATES AND NAVIGATE TO DASHBOARD
   const clearStateAndGo = () => {
-    dispatch(clearProductStatesAndCreate());
     setProgress(0);
     setDownloadURL(null);
     setImage(null);
@@ -169,10 +166,10 @@ function AddProduct() {
 
   return (
     <div>
-      {createProductResult ? (
+      {alertSuccessResult ? (
         <Result
           status="success"
-          title={createProductMessage}
+          title={alertSuccessResultMessage}
           extra={
             <Button type="primary" key="console" onClick={clearStateAndGo}>
               Go To Dashboard
@@ -303,11 +300,11 @@ function AddProduct() {
 
             <Row className="add-product-secondrow">
               <Col xl={16} xxl={10}>
-                {createProductAlertStatus ? (
+                {showAlert ? (
                   <Alert
                     className="add-product-upload"
-                    message={createProductMessage}
-                    type={createProductAlertType}
+                    message={alertMessage}
+                    type="error"
                     showIcon
                   />
                 ) : null}

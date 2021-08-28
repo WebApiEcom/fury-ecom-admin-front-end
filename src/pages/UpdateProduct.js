@@ -1,18 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import {
-  getSpecificProduct,
-  update_setProductName,
-  update_setProductType,
-  update_setProductPrice,
-  update_setProductDiscount,
-  update_setProductQty,
-  update_setProductActive,
-  update_setProductImageUrl,
-  update_setProductDescription,
-  update_setProductWeight,
-} from "../redux/productSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import "../style/UpdateProduct.css";
 import firebase from "../firebase/firebase";
@@ -39,13 +26,11 @@ const { TextArea } = Input;
 function UpdateProduct() {
   // VARIABLES
   const history = useHistory();
-  const dispatch = useDispatch();
   const { productId } = useParams();
 
   //  LOACAL STATES
   const [image, setImage] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [downloadURL, setDownloadURL] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState();
   const [alertMessageStatus, setAlertMessageStatus] = useState();
@@ -53,64 +38,96 @@ function UpdateProduct() {
   const [useSame, setUseSame] = useState(true);
   const [selectImage, setSelectImage] = useState(false);
   const [x, setX] = useState(null);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
-  const { isUpdateLoading, products, product } = useSelector(
-    (state) => state.product
-  );
+  // LOCAL STATES FOR SPECIFIC PRODUCT
+  const [productName, setProductName] = useState();
+  const [productType, setProductType] = useState();
+  const [productPrice, setProductPrice] = useState();
+  const [productDiscount, setProductDiscount] = useState();
+  const [productQty, setProductQty] = useState();
+  const [productIsActive, setProductIsActive] = useState();
+  const [productWeight, setProductWeight] = useState();
+  const [productDescription, setProductDescription] = useState();
+  const [productImage, setProductImage] = useState();
 
   // INITAL CALLS
   useEffect(() => {
-    dispatch(getSpecificProduct(productId));
+    getProduct();
   }, []);
 
-  // ACTIVE PRODUCT
+  // GET SPECIFIC PRODUCT
+  const getProduct = async () => {
+    axios
+      .request({
+        method: "get",
+        url: `http://localhost:4000/fury/admin/products/${productId}`,
+      })
+      .then((response) => {
+        setIsPageLoading(false);
+        setProductName(response.data.name);
+        setProductType(response.data.category);
+        setProductPrice(
+          response.data && response.data.prices
+            ? response.data.prices.price
+            : null
+        );
+        setProductDiscount(
+          response.data && response.data.prices
+            ? response.data.prices.discount
+            : null
+        );
+        setProductQty(response.data.qty);
+        setProductIsActive(response.data.isActive);
+        setProductWeight(response.data.weight);
+        setProductDescription(response.data.description);
+        setProductImage(response.data.imgUrl);
+      });
+  };
+
+  // NAME
   const onName = (e) => {
-    // setProductName(e.target.value);
-    dispatch(update_setProductName(e.target.value));
+    setProductName(e.target.value);
   };
   // TYPE
   const onType = (value) => {
-    // setProductType(value);
-    dispatch(update_setProductType(value));
+    setProductType(value);
   };
 
   // PRICE
   const onPrice = (value) => {
-    // setProductPrice(value);
-    dispatch(update_setProductPrice(value));
+    setProductPrice(value);
   };
 
   // DISCOUNT
   const onDiscount = (value) => {
-    // setProductDiscount(value);
-    dispatch(update_setProductDiscount(value));
+    setProductDiscount(value);
   };
 
   // QUANTITY
   const onQty = (value) => {
-    // setProductQty(value);
-    dispatch(update_setProductQty(value));
+    setProductQty(value);
   };
 
   // WEIGHT
   const onWeight = (e) => {
-    dispatch(update_setProductWeight(e.target.value));
+    setProductWeight(e.target.value);
   };
 
   // DESCRIPTON
   const onDescription = (e) => {
-    dispatch(update_setProductDescription(e.target.value));
+    setProductDescription(e.target.value);
   };
 
   // ACTIVE PRODUCT
   const onActive = (e) => {
-    dispatch(update_setProductActive(e.target.checked));
+    setProductIsActive(e.target.checked);
   };
 
   // IMAGE SELECT FROM COMPUTER
   const onImageSelect = (e) => {
     if (e.target.files[0]) {
-      dispatch(update_setProductImageUrl(null));
+      setProductImage(null);
       setImage(e.target.files[0]);
       setX(URL.createObjectURL(e.target.files[0]));
     }
@@ -125,7 +142,7 @@ function UpdateProduct() {
 
   // IMAGE UPLOAD
   const handleUpload = () => {
-    if (image == null && product.imgUrl == null) {
+    if (image == null && productImage == null) {
       setShowAlert(true);
       setAlertMessage("Please select a Image");
       setAlertMessageStatus("error");
@@ -149,7 +166,7 @@ function UpdateProduct() {
         },
         () => {
           uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-            dispatch(update_setProductImageUrl(url));
+            setProductImage(url);
             setSubmitdisable(false);
           });
           document.getElementById("file").value = null;
@@ -162,17 +179,17 @@ function UpdateProduct() {
   const updateProduct = async () => {
     await axios
       .put(`http://localhost:4000/fury/admin/products/${productId}`, {
-        name: product.name,
-        qty: product.qty,
-        imgUrl: product.imgUrl,
-        category: product.category,
-        isActive: product.isActive,
+        name: productName,
+        qty: productQty,
+        imgUrl: productImage,
+        category: productType,
+        isActive: productIsActive,
         prices: {
-          price: product.prices.price,
-          discount: product.prices.discount,
+          price: productPrice,
+          discount: productDiscount,
         },
-        description: product.description,
-        weight: product.weight,
+        description: productDescription,
+        weight: productWeight,
       })
       .then((res) => {
         setShowAlert(true);
@@ -192,7 +209,7 @@ function UpdateProduct() {
   };
 
   return (
-    <Skeleton loading={isUpdateLoading}>
+    <Skeleton loading={isPageLoading}>
       <div>
         {alertMessageStatus == "success" ? (
           <Result
@@ -217,7 +234,7 @@ function UpdateProduct() {
                   <Input
                     className="add-product-input"
                     onChange={onName}
-                    value={product.name}
+                    value={productName}
                   />
                 </Col>
                 <Col xl={8} xxl={5} className="add-product-field">
@@ -225,7 +242,7 @@ function UpdateProduct() {
                   <Select
                     className="add-product-input"
                     onChange={onType}
-                    value={product.category}
+                    value={productType}
                   >
                     <Option value="Celebration Cakes">Celebration Cakes</Option>
                     <Option value="Little Cupcakes">Little Cupcakes</Option>
@@ -241,9 +258,7 @@ function UpdateProduct() {
                     className="add-product-input"
                     parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                     onChange={onPrice}
-                    value={
-                      product && product.prices ? product.prices.price : null
-                    }
+                    value={productPrice}
                   />
                 </Col>
                 <Col xl={8} xxl={5} className="add-product-field">
@@ -255,9 +270,7 @@ function UpdateProduct() {
                     formatter={(value) => `${value}%`}
                     parser={(value) => value.replace("%", "")}
                     onChange={onDiscount}
-                    value={
-                      product && product.prices ? product.prices.discount : null
-                    }
+                    value={productDiscount}
                   />
                 </Col>
               </Row>
@@ -268,7 +281,7 @@ function UpdateProduct() {
                   <Input
                     className="add-product-input"
                     onChange={onWeight}
-                    value={product.weight}
+                    value={productWeight}
                   />
                 </Col>
                 <Col xl={8} xxl={5} className="add-product-field">
@@ -277,7 +290,7 @@ function UpdateProduct() {
                     rows={5}
                     className="add-product-input"
                     onChange={onDescription}
-                    value={product.description}
+                    value={productDescription}
                   />
                 </Col>
               </Row>
@@ -289,14 +302,14 @@ function UpdateProduct() {
                     min={1}
                     className="add-product-input"
                     onChange={onQty}
-                    value={product.qty}
+                    value={productQty}
                   />
                 </Col>
                 <Col xl={8} xxl={5} className="add-product-field-check">
                   <Checkbox
                     className="add-product-input"
                     onChange={onActive}
-                    checked={product.isActive}
+                    checked={productIsActive}
                   >
                     Active product
                   </Checkbox>
@@ -330,7 +343,7 @@ function UpdateProduct() {
                 <Col xl={8} xxl={5} className="add-product-fieldx">
                   <div className="add-product-image-section">
                     <img
-                      src={product.imgUrl || x}
+                      src={productImage || x}
                       alt="Uploaded Images"
                       className="add-product-image"
                     />
@@ -342,7 +355,6 @@ function UpdateProduct() {
                 <Col xl={16} xxl={10}>
                   {useSame ? null : (
                     <>
-                      {" "}
                       <Progress
                         className="add-product-progress"
                         percent={progress}
