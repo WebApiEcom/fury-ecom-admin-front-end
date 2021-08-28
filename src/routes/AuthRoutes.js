@@ -7,6 +7,8 @@ import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
 import AddProduct from "../pages/AddProduct";
 import UpdateProduct from "../pages/UpdateProduct";
+import ViewOrders from "../pages/ViewOrders";
+import ViewOrder from "../pages/ViewOrder";
 
 function AuthRoutes() {
   return (
@@ -43,6 +45,12 @@ function AuthRoutes() {
       </Route>
       <Route path="/edit">
         <Edit />
+      </Route>
+      <Route path="/view_orders">
+        <ViewOrders />
+      </Route>
+      <Route path="/view_order/:id">
+        <ViewOrder />
       </Route>
       <Route exact path="/">
         <Dashboard />
