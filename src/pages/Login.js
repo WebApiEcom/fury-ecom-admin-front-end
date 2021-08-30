@@ -137,7 +137,7 @@ function Login() {
           <Row className="login-header">
             <Col xs={22} md={11}></Col>
             <Col xs={22} md={11} className="login-header-col">
-              <div className="login-header-text-wrapper">
+              {/* <div className="login-header-text-wrapper">
                 <p className="rubik login-dont-have-acc">
                   Don't have an account?
                 </p>
@@ -147,7 +147,7 @@ function Login() {
                 >
                   Sign up
                 </p>
-              </div>
+              </div> */}
             </Col>
           </Row>
 
@@ -164,13 +164,11 @@ function Login() {
                 <h1 className="rubik lgoin-title">Welcome to Fury</h1>
                 {error == "" ? (
                   <p className="rubik lgoin-sub-title">
-                    Make smarter business decisions, and connect
-                    people anywhere.
+                    Make smarter business decisions, and connect people
+                    anywhere.
                   </p>
                 ) : (
-                  <p className="rubik lgoin-sub-title-error">
-                    {error}
-                  </p>
+                  <p className="rubik lgoin-sub-title-error">{error}</p>
                 )}
 
                 <Form
