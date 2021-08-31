@@ -13,7 +13,7 @@ function ViewOrders() {
 
     useEffect(() => {
 
-        Axious.get("http://localhost:4000/orders/").then((response) => {
+        Axious.get("http://localhost:4000/fury/orders/").then((response) => {
             setOrdersList(response.data);
         });
 

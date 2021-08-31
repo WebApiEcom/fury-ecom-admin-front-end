@@ -42,7 +42,7 @@ function ViewOrder() {
 
     useEffect(() => {
 
-        Axious.get(`http://localhost:4000/orders/${id}`).then((res) => {
+        Axious.get(`http://localhost:4000/fury/orders/${id}`).then((res) => {
             set_id(res.data._id);
             setUserID(res.data.user_id);
             setTotal(res.data.total);
