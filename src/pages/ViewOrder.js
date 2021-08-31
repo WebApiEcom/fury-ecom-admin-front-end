@@ -30,7 +30,7 @@ const { TextArea } = Input;
 function ViewOrder() {
 
     const [_id, set_id] = useState("");
-    const [user_id, setUserID] = useState("");
+    const [email, setEmail] = useState("");
     const [total, setTotal] = useState(0);
     const [items, setItems] = useState([]);
     const [payment_type, setPaymentType] = useState("");
@@ -44,7 +44,7 @@ function ViewOrder() {
 
         Axious.get(`http://localhost:4000/fury/orders/${id}`).then((res) => {
             set_id(res.data._id);
-            setUserID(res.data.user_id);
+            setEmail(res.data.email);
             setTotal(res.data.total);
             setItems(res.data.items);
             setPaymentType(res.data.payment_type);
@@ -109,8 +109,8 @@ function ViewOrder() {
         </Row>
         <div>
             <Row>
-                <Text className="view-order-lable">User Id</Text>&nbsp;&nbsp;
-                <Text className="view-order-value">{user_id}</Text>
+                <Text className="view-order-lable">User Email</Text>&nbsp;&nbsp;
+                <Text className="view-order-value">{email}</Text>
             </Row>
             <Divider />
             <Table columns={columns}

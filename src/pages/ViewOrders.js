@@ -32,8 +32,8 @@ function ViewOrders() {
             }
         },
         {
-            title: "User Id",
-            dataIndex: "user_id",
+            title: "User Email",
+            dataIndex: "email",
             render: (text) => {
                 return (
                     <Text type="primary" className="popins product-details-table-text">
