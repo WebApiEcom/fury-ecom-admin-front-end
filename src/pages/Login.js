@@ -31,10 +31,6 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // States for alert
-  const [loginAlertVisibility, setLoginAlertVisibility] = useState("none");
-  const [loginAlertMessage, setLoginAlertMessage] = useState(null);
-
   // Getting email
   const onEmailChange = (event) => {
     setEmail(event.target.value);
@@ -47,9 +43,6 @@ function Login() {
 
   // Logging button click event
   const onLoginClick = (event) => {
-    // localStorage.setItem("token", "T");
-    // setLogged(true);
-    // event.preventDefault();
     setLoading(true);
     setError("");
     axios
@@ -136,19 +129,7 @@ function Login() {
         >
           <Row className="login-header">
             <Col xs={22} md={11}></Col>
-            <Col xs={22} md={11} className="login-header-col">
-              {/* <div className="login-header-text-wrapper">
-                <p className="rubik login-dont-have-acc">
-                  Don't have an account?
-                </p>
-                <p
-                  className="rubik login-dont-sign-in-text"
-                  onClick={onSignUp}
-                >
-                  Sign up
-                </p>
-              </div> */}
-            </Col>
+            <Col xs={22} md={11} className="login-header-col"></Col>
           </Row>
 
           <Row className="login-form-container">
