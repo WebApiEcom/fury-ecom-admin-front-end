@@ -1,0 +1,39 @@
+.view-order-lable {
+  font-weight: bold;
+}
+.view-order-value {
+  color: #626567;
+  font-weight: 500;
+}
+.view-order-inline {
+  display: inline-block;
+}
+.view-order-items {
+  text-indent: 10px;
+  font-weight: 500;
+}
+.view-order-lable-wide {
+  font-weight: 500;
+  color: #626567;
+}
+.view-order-lable-large {
+  font-size: large;
+  text-align: right;
+}
+.view-order-lable-large-wide {
+  font-size: large;
+  font-weight: 500;
+  display: flex;
+}
+.view-order-table-avatar {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  display: flex;
+}
+.view-order-table-coloumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}

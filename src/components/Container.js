@@ -59,6 +59,9 @@ function Container() {
             <Menu.Item key="1" icon={<RiseOutlined />}>
               <Link to="/">Dashboard</Link>
             </Menu.Item>
+            <Menu.Item key="2" icon={<RiseOutlined />}>
+              <Link to="/view_orders">View Orders</Link>
+            </Menu.Item>
             <Menu.Item
               key="4"
               icon={<LogoutOutlined />}
