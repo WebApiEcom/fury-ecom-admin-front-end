@@ -155,7 +155,7 @@ function AddProduct() {
       });
   };
 
-  // CLEAR REDUX STATES AND NAVIGATE TO DASHBOARD
+  // CLEAR STATES AND NAVIGATE TO DASHBOARD
   const clearStateAndGo = () => {
     setProgress(0);
     setDownloadURL(null);

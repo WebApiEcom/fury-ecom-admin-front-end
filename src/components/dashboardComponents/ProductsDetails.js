@@ -62,7 +62,7 @@ function ProductsDetails() {
       });
   };
 
-  // INITIAL API CALL FOR GER PRODUCTS
+  // INITIAL API CALL FOR GET PRODUCTS
   useEffect(() => {
     getProducts();
   }, []);
