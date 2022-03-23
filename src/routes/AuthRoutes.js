@@ -5,7 +5,7 @@ import Insert from "../pages/Insert";
 import Edit from "../pages/Edit";
 import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
-import AddProduct from "../pages/AddProduct";
+mport AddProduct from "../pages/AddProduct";i
 import UpdateProduct from "../pages/UpdateProduct";
 import ViewOrders from "../pages/ViewOrders";
 import ViewOrder from "../pages/ViewOrder";

@@ -191,9 +191,10 @@ function AddProduct() {
               <Col xl={8} xxl={5} className="add-product-field">
                 <Text className="popins">Type</Text>
                 <Select className="add-product-input" onChange={onType}>
-                  <Option value="Celebration Cakes">Celebration Cakes</Option>
-                  <Option value="Little Cupcakes">Little Cupcakes</Option>
-                  <Option value="Fruit Desserts">Fruit Desserts</Option>
+                  <Option value="Celebration Cakes">Special Cakes</Option>
+                  <Option value="Fruit Desserts">Gift Boxes</Option>
+                  <Option value="Little Cupcakes">Chocoloate Boxes</Option>
+                  <Option value="Fruit Desserts">New Creations</Option>
                 </Select>
               </Col>
             </Row>
